@@ -4,7 +4,7 @@ import init from './Hooks'
 const baseURL = 'https://mymoney-maia-default-rtdb.firebaseio.com/'
 
 
-const {useGet, usePost, useDelete} = init(baseURL)
+const {useGet} = init(baseURL)
 
 const Meses = () =>{
     const data = useGet('meses')
@@ -47,6 +47,7 @@ const Meses = () =>{
                 </table>
                 )
     }
+    return null
      
 }
 
