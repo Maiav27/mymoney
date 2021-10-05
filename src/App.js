@@ -4,8 +4,8 @@
 import Header from './elements/Header';
 
 import {BrowserRouter as Router, Route} from 'react-router-dom'
-import Home from './Home';
-import Movimentacoes from './Movimentacoes';
+import Home from './pages/Home';
+import Movimentacoes from './pages/Movimentacoes';
 
 
 
