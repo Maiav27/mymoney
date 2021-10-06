@@ -4,7 +4,7 @@ import { useReducer, useEffect} from "react";
 
 
 const reducer = (state, action) =>{
-    console.log('state', state, 'action', action)
+ 
     if(action.type === 'REQUEST'){
       return {
         ...state,
@@ -49,13 +49,12 @@ const reducer = (state, action) =>{
             data : {}
           } )
             
-        const post = (data) => {
+        const post = async (data) => {
             dispatch({type : 'REQUEST'})
-            axios.post(baseURL + resource + '.json' , data)
-            .then(res => {
+          const res =  await  axios.post(baseURL + resource + '.json' , data)
                 dispatch({type : 'SUCCESS',
                       data : res.data})
-                console.log(res.data)})
+                console.log(res.data)
           }
           return [data, post]
     }
