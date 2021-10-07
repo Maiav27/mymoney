@@ -3,7 +3,7 @@ import { useState } from 'react'
 
 const baseURL = 'https://mymoney-maia-default-rtdb.firebaseio.com/movimentcoes/'
 
-const {useGet, usePost} = init(baseURL)
+const {useGet, usePost, useDelete} = init(baseURL)
 
 
 
@@ -11,8 +11,8 @@ const {useGet, usePost} = init(baseURL)
 const Movimentacoes= ({match}) => {
     const data = useGet(match.params.data)
     const [descricao, setDescricao] = useState('')
-    const [valor, setValor] = useState(0)
-
+    const [valor, setValor] = useState('')
+    const [removeData, remove] = useDelete()
     const  [postData, post] = usePost(match.params.data)
 
 
@@ -20,15 +20,26 @@ const Movimentacoes= ({match}) => {
         tipo === 'descricao' ? setDescricao(evt.target.value) : setValor(evt.target.value)
     }
 
-    const salvarMovimentacao = () =>{
-        post({
-             descricao : descricao , 
-            valor : valor
-        })
+    const salvarMovimentacao =  async () =>{
+      if(!isNaN(valor) && valor.search(/^[-]\d+(\.)?\d+?$/) >= 0){
 
-        console.log(descricao, valor)
+          await  post({
+                 descricao : descricao , 
+                valor : valor
+            })
+    
+            setDescricao('')
+            setValor(0)
+            data.refetch()
+            console.log(descricao, valor)
+      }
+        }
+
+    const removerMovimentacao = async(id) =>{
+        await remove(`${match.params.data}/${id}`)
+        data.refetch()
     }
-        
+            
     
     return(
         <div className='container'>
@@ -46,7 +57,10 @@ const Movimentacoes= ({match}) => {
                         return(
                             <tr>
                               <td>{data.data[movimentacao].descricao}</td>
-                              <td>{data.data[movimentacao].valor} </td>
+                              <td>
+                              {data.data[movimentacao].valor} 
+                              <button onClick={() => removerMovimentacao(movimentacao)}>-</button>
+                              </td>
                             </tr>
                         )
                     }
@@ -57,12 +71,13 @@ const Movimentacoes= ({match}) => {
                     <td>
                         <input type="text" value={valor} onChange={onChange('valor')} />
                         <button onClick={salvarMovimentacao}>+</button>
+
                     </td>
                 </tr>
               </tbody>
               
            </table>
-           {JSON.stringify(data.data)}
+           {JSON.stringify(data)}
         </div>
     )
 }
