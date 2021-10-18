@@ -8,6 +8,7 @@ const {useGet, usePost, useDelete} = init(baseURL)
 
 
 
+
 const Movimentacoes= ({match}) => {
     const data = useGet(match.params.data)
     const [descricao, setDescricao] = useState('')
@@ -21,7 +22,7 @@ const Movimentacoes= ({match}) => {
     }
 
     const salvarMovimentacao =  async () =>{
-      if(!isNaN(valor) && valor.search(/^[-]\d+(\.)?\d+?$/) >= 0){
+      if(!isNaN(valor) && valor.search(/^[-]?\d+(\.)?\d+?$/) >= 0){
 
           await  post({
                  descricao : descricao , 
@@ -52,14 +53,14 @@ const Movimentacoes= ({match}) => {
                 </tr>
               </thead>
               <tbody>
-                {
+                { data.data &&
                     Object.keys(data.data).map(movimentacao =>{
                         return(
-                            <tr>
+                            <tr key={movimentacao}>
                               <td>{data.data[movimentacao].descricao}</td>
                               <td>
                               {data.data[movimentacao].valor} 
-                              <button onClick={() => removerMovimentacao(movimentacao)}>-</button>
+                              <button className='btn btn-danger' style={{marginLeft : '10px'}} onClick={() => removerMovimentacao(movimentacao)}>-</button>
                               </td>
                             </tr>
                         )
@@ -70,7 +71,7 @@ const Movimentacoes= ({match}) => {
                     <td><input type="text" value={descricao} onChange={onChange('descricao')} /></td>
                     <td>
                         <input type="text" value={valor} onChange={onChange('valor')} />
-                        <button onClick={salvarMovimentacao}>+</button>
+                        <button className='btn btn-success' style={{marginLeft : '10px'}} onClick={salvarMovimentacao}>+</button>
 
                     </td>
                 </tr>
